@@ -3,11 +3,13 @@ import { TRANSACTION_CATEGORIES } from "../lib/constants";
 
 export default function BudgetForm({ onSubmit, initialBudgets }) {
   const [budgets, setBudgets] = useState(
-    initialBudgets ||
-      TRANSACTION_CATEGORIES.reduce((acc, cat) => {
-        acc[cat.id] = "";
-        return acc;
-      }, {})
+    TRANSACTION_CATEGORIES.reduce((acc, cat) => {
+      if (cat.id !== "income") {
+        // Exclude income from category budgets
+        acc[cat.id] = initialBudgets?.[cat.id] || "";
+      }
+      return acc;
+    }, {})
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 

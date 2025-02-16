@@ -125,7 +125,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...budgets, income: amount }),
+        body: JSON.stringify({ income: amount }),
       });
       if (res.ok) {
         fetchBudgets();

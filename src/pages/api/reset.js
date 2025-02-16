@@ -21,6 +21,15 @@ export default async function handler(req, res) {
         { upsert: true }
       );
 
+    // Reset monthly income
+    await db
+      .collection("monthly_income")
+      .updateOne(
+        { userId: "default" },
+        { $set: { amount: 0 } },
+        { upsert: true }
+      );
+
     res.status(200).json({ message: "All data reset successfully" });
   } catch (error) {
     console.error("API Error:", error);
