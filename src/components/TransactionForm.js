@@ -1,5 +1,6 @@
 import { useState } from "react";
 // import { Button, Input, Label } from "./ui/button"; // Example shadcn/ui components
+import { TRANSACTION_CATEGORIES } from "../lib/constants";
 
 export default function TransactionForm({ onSubmit, initialData }) {
   const [amount, setAmount] = useState(initialData?.amount || "");
@@ -10,6 +11,7 @@ export default function TransactionForm({ onSubmit, initialData }) {
     initialData?.description || ""
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [category, setCategory] = useState(initialData?.category || "other");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,11 +23,13 @@ export default function TransactionForm({ onSubmit, initialData }) {
         amount: Number(amount),
         date,
         description,
+        category,
       });
       // Reset form after successful submission
       setAmount("");
       setDate(new Date().toISOString().split("T")[0]);
       setDescription("");
+      setCategory("other");
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
@@ -79,6 +83,26 @@ export default function TransactionForm({ onSubmit, initialData }) {
             p-2 border"
           placeholder="Enter description"
         />
+      </div>
+
+      <div className="space-y-1">
+        <label className="block text-sm font-medium text-gray-700">
+          Category
+        </label>
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          required
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+            focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm
+            p-2 border"
+        >
+          {TRANSACTION_CATEGORIES.map(({ id, label }) => (
+            <option key={id} value={id}>
+              {label}
+            </option>
+          ))}
+        </select>
       </div>
 
       <button
