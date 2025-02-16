@@ -7,11 +7,14 @@ import CategoryPieChart from "../components/CategoryPieChart";
 import BudgetForm from "../components/BudgetForm";
 import BudgetComparison from "../components/BudgetComparison";
 import SpendingInsights from "../components/SpendingInsights";
+import ResetButton from "../components/ResetButton";
+import BudgetIncomeModal from "../components/BudgetIncomeModal";
 
 export default function Home() {
   const [transactions, setTransactions] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [budgets, setBudgets] = useState({});
+  const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
 
   useEffect(() => {
     fetchTransactions();
@@ -42,25 +45,30 @@ export default function Home() {
   const processMonthlyData = (transactions) => {
     const monthlyData = transactions.reduce((acc, transaction) => {
       const date = new Date(transaction.date);
-      const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
+      const monthYear = `${date.toLocaleString("default", {
+        month: "short",
+      })} ${date.getFullYear()}`;
 
       if (!acc[monthYear]) {
         acc[monthYear] = 0;
       }
-      acc[monthYear] += Number(transaction.amount);
+      acc[monthYear] += Math.abs(Number(transaction.amount));
       return acc;
     }, {});
 
     return Object.entries(monthlyData)
       .map(([month, amount]) => ({
         month,
-        amount,
+        amount: amount.toFixed(2),
       }))
       .sort((a, b) => {
-        const [aMonth, aYear] = a.month.split("/");
-        const [bMonth, bYear] = b.month.split("/");
-        return new Date(aYear, aMonth - 1) - new Date(bYear, bMonth - 1);
-      });
+        const [aMonth, aYear] = a.month.split(" ");
+        const [bMonth, bYear] = b.month.split(" ");
+        const aDate = new Date(`${aMonth} 1, ${aYear}`);
+        const bDate = new Date(`${bMonth} 1, ${bYear}`);
+        return aDate - bDate;
+      })
+      .slice(-6);
   };
 
   const processCategoryData = (transactions) => {
@@ -105,15 +113,44 @@ export default function Home() {
     }
   };
 
+  const handleReset = () => {
+    fetchTransactions();
+    fetchBudgets();
+  };
+
+  const handleUpdateIncome = async (amount) => {
+    try {
+      const res = await fetch("/api/budgets", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...budgets, income: amount }),
+      });
+      if (res.ok) {
+        fetchBudgets();
+      }
+    } catch (error) {
+      console.error("Error updating income:", error);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-4 sm:py-8 max-w-6xl">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-8 text-center">
-        Personal Finance Visualizer
-      </h1>
+      <div className="flex justify-between items-center mb-4 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold">
+          Personal Finance Visualizer
+        </h1>
+        <ResetButton onReset={handleReset} />
+      </div>
 
       {/* Dashboard Summary */}
       <div className="mb-4 sm:mb-8">
-        <DashboardSummary transactions={transactions} budgets={budgets} />
+        <DashboardSummary
+          transactions={transactions}
+          budgets={budgets}
+          onUpdateIncome={handleUpdateIncome}
+        />
       </div>
 
       {/* Main Content */}
@@ -135,7 +172,10 @@ export default function Home() {
         </div>
 
         {/* Budgets Section */}
-        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+        <div
+          id="budget-section"
+          className="bg-white p-4 sm:p-6 rounded-lg shadow-md"
+        >
           <h2 className="text-lg sm:text-xl font-semibold mb-4">
             Monthly Budgets
           </h2>

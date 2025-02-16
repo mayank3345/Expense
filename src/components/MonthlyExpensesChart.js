@@ -18,7 +18,7 @@ export default function MonthlyExpensesChart({ data }) {
             top: 20,
             right: 20,
             bottom: 60,
-            left: 20,
+            left: 40,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -38,7 +38,7 @@ export default function MonthlyExpensesChart({ data }) {
             tickFormatter={(value) => `$${value}`}
           />
           <Tooltip
-            formatter={(value) => `$${value.toFixed(2)}`}
+            formatter={(value) => [`$${value}`, "Total Expenses"]}
             contentStyle={{
               backgroundColor: "white",
               border: "1px solid #e5e7eb",
@@ -52,6 +52,7 @@ export default function MonthlyExpensesChart({ data }) {
             fill="#4F46E5"
             radius={[4, 4, 0, 0]}
             maxBarSize={50}
+            name="Total Expenses"
           />
         </BarChart>
       </ResponsiveContainer>

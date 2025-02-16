@@ -19,19 +19,23 @@ export default function TransactionForm({ onSubmit, initialData }) {
 
     setIsSubmitting(true);
     try {
+      // Convert amount to negative number to represent expense
+      const expenseAmount = -Math.abs(Number(amount));
+
       await onSubmit({
-        amount: Number(amount),
+        amount: expenseAmount,
         date,
         description,
         category,
       });
-      // Reset form after successful submission
+
+      // Reset form
       setAmount("");
       setDate(new Date().toISOString().split("T")[0]);
       setDescription("");
       setCategory("other");
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error submitting transaction:", error);
     } finally {
       setIsSubmitting(false);
     }

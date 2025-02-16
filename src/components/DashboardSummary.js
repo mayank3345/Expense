@@ -1,16 +1,29 @@
+import { useState } from "react";
 import { TRANSACTION_CATEGORIES } from "../lib/constants";
+import BudgetIncomeModal from "./BudgetIncomeModal";
 
-export default function DashboardSummary({ transactions, budgets }) {
-  const totalIncome = transactions
-    .filter((t) => t.amount > 0)
-    .reduce((sum, t) => sum + Number(t.amount), 0);
+export default function DashboardSummary({
+  transactions,
+  budgets,
+  onUpdateIncome,
+}) {
+  const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
 
-  const totalExpenses = transactions
-    .filter((t) => t.amount < 0)
-    .reduce((sum, t) => sum + Math.abs(Number(t.amount)), 0);
+  // Calculate total income from monthly budget only
+  const totalIncome = Number(budgets?.income || 0);
+
+  // Calculate total monthly budget (sum of all category budgets)
+  const monthlyBudget = Object.entries(budgets)
+    .filter(([key]) => key !== "income") // Exclude income from budget calculation
+    .reduce((sum, [_, amount]) => sum + Number(amount || 0), 0);
+
+  // Calculate total expenses from all transactions
+  const totalExpenses = transactions.reduce((sum, t) => {
+    const amount = Math.abs(Number(t.amount));
+    return sum + amount;
+  }, 0);
 
   const netSavings = totalIncome - totalExpenses;
-  const monthlyIncome = Number(budgets?.income || 0);
 
   const categoryTotals = transactions.reduce((acc, transaction) => {
     const amount = Math.abs(Number(transaction.amount));
@@ -33,38 +46,55 @@ export default function DashboardSummary({ transactions, budgets }) {
       {/* Summary Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-100">
-          <h3 className="text-xs sm:text-sm font-medium text-gray-500 truncate">
-            Monthly Budget
-          </h3>
-          <p className="mt-1 text-lg sm:text-xl lg:text-2xl font-bold text-blue-600">
-            ${monthlyIncome.toFixed(2)}
-          </p>
-        </div>
-
-        <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-100">
-          <h3 className="text-xs sm:text-sm font-medium text-gray-500 truncate">
-            Total Income
-          </h3>
-          <p className="mt-1 text-lg sm:text-xl lg:text-2xl font-bold text-green-600">
+          <div className="flex justify-between items-start mb-2">
+            <h3 className="text-xs sm:text-sm font-medium text-gray-500 truncate">
+              Monthly Income
+            </h3>
+            <button
+              onClick={() => setIsIncomeModalOpen(true)}
+              className="text-xs sm:text-sm text-indigo-600 hover:text-indigo-800 
+                font-medium transition-colors"
+            >
+              Edit
+            </button>
+          </div>
+          <p className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600">
             ${totalIncome.toFixed(2)}
           </p>
         </div>
+        <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-100">
+          <div className="flex justify-between items-start mb-2">
+            <h3 className="text-xs sm:text-sm font-medium text-gray-500 truncate">
+              Monthly Budget
+            </h3>
+            <a
+              href="#budget-section"
+              className="text-xs sm:text-sm text-indigo-600 hover:text-indigo-800 
+                font-medium transition-colors"
+            >
+              Edit
+            </a>
+          </div>
+          <p className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600">
+            ${monthlyBudget.toFixed(2)}
+          </p>
+        </div>
 
         <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-100">
-          <h3 className="text-xs sm:text-sm font-medium text-gray-500 truncate">
+          <h3 className="text-xs sm:text-sm font-medium text-gray-500 truncate mb-2">
             Total Expenses
           </h3>
-          <p className="mt-1 text-lg sm:text-xl lg:text-2xl font-bold text-red-600">
+          <p className="text-lg sm:text-xl lg:text-2xl font-bold text-red-600">
             ${totalExpenses.toFixed(2)}
           </p>
         </div>
 
         <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-100">
-          <h3 className="text-xs sm:text-sm font-medium text-gray-500 truncate">
+          <h3 className="text-xs sm:text-sm font-medium text-gray-500 truncate mb-2">
             Net Savings
           </h3>
           <p
-            className={`mt-1 text-lg sm:text-xl lg:text-2xl font-bold ${
+            className={`text-lg sm:text-xl lg:text-2xl font-bold ${
               netSavings >= 0 ? "text-green-600" : "text-red-600"
             }`}
           >
@@ -101,6 +131,14 @@ export default function DashboardSummary({ transactions, budgets }) {
           )}
         </div>
       </div>
+
+      {/* Income Modal */}
+      <BudgetIncomeModal
+        isOpen={isIncomeModalOpen}
+        onClose={() => setIsIncomeModalOpen(false)}
+        onSubmit={onUpdateIncome}
+        initialValue={budgets?.income}
+      />
     </div>
   );
 }

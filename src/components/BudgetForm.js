@@ -27,24 +27,6 @@ export default function BudgetForm({ onSubmit, initialBudgets }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Income Input */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 pb-4 border-b border-gray-200">
-        <label className="text-sm font-medium text-gray-700 sm:w-1/2">
-          Monthly Income
-        </label>
-        <input
-          type="number"
-          value={budgets.income || ""}
-          onChange={(e) => setBudgets({ ...budgets, income: e.target.value })}
-          min="0"
-          step="0.01"
-          className="w-full sm:w-1/2 rounded-md border-gray-300 shadow-sm 
-            focus:border-indigo-500 focus:ring-indigo-500 text-sm
-            p-2 border"
-          placeholder="0.00"
-        />
-      </div>
-
       {/* Expense Categories */}
       <div className="space-y-4">
         <h3 className="text-sm font-medium text-gray-500">Monthly Expenses</h3>
