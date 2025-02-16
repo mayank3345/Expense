@@ -31,7 +31,7 @@ export default function ResetButton({ onReset }) {
         className="text-red-600 hover:text-red-800 text-sm sm:text-base 
           font-medium transition-colors"
       >
-        Reset App
+        Reset
       </button>
 
       {/* Modal Overlay */}
@@ -39,11 +39,11 @@ export default function ResetButton({ onReset }) {
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Reset Application
+              Reset All data to Zero
             </h3>
             <p className="text-sm text-gray-600 mb-6">
-              Are you sure you want to reset the application? This will delete
-              all transactions and budgets. This action cannot be undone.
+              Are you sure you want to reset Everything? This will delete all
+              transactions and budgets. This action cannot be undone.
             </p>
             <div className="flex justify-end space-x-4">
               <button
