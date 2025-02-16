@@ -3,32 +3,56 @@ import {
   Bar,
   XAxis,
   YAxis,
-  Tooltip,
   CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
 } from "recharts";
 
 export default function MonthlyExpensesChart({ data }) {
   return (
-    <div className="w-full h-[300px]">
+    <div className="w-full h-[300px] -ml-4 sm:ml-0">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
+        <BarChart
+          data={data}
+          margin={{
+            top: 20,
+            right: 20,
+            bottom: 60,
+            left: 20,
+          }}
+        >
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-          <XAxis dataKey="month" stroke="#6b7280" fontSize={12} />
+          <XAxis
+            dataKey="month"
+            stroke="#6b7280"
+            fontSize={12}
+            angle={-45}
+            textAnchor="end"
+            height={60}
+            interval={0}
+            tickMargin={5}
+          />
           <YAxis
             stroke="#6b7280"
             fontSize={12}
             tickFormatter={(value) => `$${value}`}
           />
           <Tooltip
+            formatter={(value) => `$${value.toFixed(2)}`}
             contentStyle={{
               backgroundColor: "white",
               border: "1px solid #e5e7eb",
               borderRadius: "6px",
               padding: "8px",
             }}
+            cursor={{ fill: "rgba(79, 70, 229, 0.1)" }}
           />
-          <Bar dataKey="amount" fill="#8884d8" radius={[4, 4, 0, 0]} />
+          <Bar
+            dataKey="amount"
+            fill="#4F46E5"
+            radius={[4, 4, 0, 0]}
+            maxBarSize={50}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -23,9 +23,17 @@ export default function BudgetComparison({ budgets, actualSpending }) {
     .filter((item) => item.budget > 0 || item.actual > 0);
 
   return (
-    <div className="w-full h-[400px]">
+    <div className="w-full h-[400px] -ml-4 sm:ml-0">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
+        <BarChart
+          data={data}
+          margin={{
+            top: 20,
+            right: 20,
+            bottom: 60,
+            left: 20,
+          }}
+        >
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
           <XAxis
             dataKey="name"
@@ -34,6 +42,8 @@ export default function BudgetComparison({ budgets, actualSpending }) {
             angle={-45}
             textAnchor="end"
             height={80}
+            interval={0}
+            tickMargin={5}
           />
           <YAxis
             stroke="#6b7280"
@@ -49,9 +59,13 @@ export default function BudgetComparison({ budgets, actualSpending }) {
               padding: "8px",
             }}
           />
-          <Legend />
-          <Bar dataKey="budget" name="Budget" fill="#9BA3AF" />
-          <Bar dataKey="actual" name="Actual" fill="#4F46E5" />
+          <Legend
+            wrapperStyle={{
+              paddingTop: "20px",
+            }}
+          />
+          <Bar dataKey="budget" name="Budget" fill="#9BA3AF" maxBarSize={50} />
+          <Bar dataKey="actual" name="Actual" fill="#4F46E5" maxBarSize={50} />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -28,8 +28,8 @@ export default function BudgetForm({ onSubmit, initialBudgets }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Income Input */}
-      <div className="flex items-center space-x-4 pb-4 border-b border-gray-200">
-        <label className="w-1/2 text-sm font-medium text-gray-700">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 pb-4 border-b border-gray-200">
+        <label className="text-sm font-medium text-gray-700 sm:w-1/2">
           Monthly Income
         </label>
         <input
@@ -38,8 +38,8 @@ export default function BudgetForm({ onSubmit, initialBudgets }) {
           onChange={(e) => setBudgets({ ...budgets, income: e.target.value })}
           min="0"
           step="0.01"
-          className="w-1/2 rounded-md border-gray-300 shadow-sm 
-            focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm
+          className="w-full sm:w-1/2 rounded-md border-gray-300 shadow-sm 
+            focus:border-indigo-500 focus:ring-indigo-500 text-sm
             p-2 border"
           placeholder="0.00"
         />
@@ -52,8 +52,11 @@ export default function BudgetForm({ onSubmit, initialBudgets }) {
           if (category.id === "income") return null;
 
           return (
-            <div key={category.id} className="flex items-center space-x-4">
-              <label className="w-1/2 text-sm font-medium text-gray-700">
+            <div
+              key={category.id}
+              className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4"
+            >
+              <label className="text-sm font-medium text-gray-700 sm:w-1/2">
                 {category.label}
               </label>
               <input
@@ -64,8 +67,8 @@ export default function BudgetForm({ onSubmit, initialBudgets }) {
                 }
                 min="0"
                 step="0.01"
-                className="w-1/2 rounded-md border-gray-300 shadow-sm 
-                  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm
+                className="w-full sm:w-1/2 rounded-md border-gray-300 shadow-sm 
+                  focus:border-indigo-500 focus:ring-indigo-500 text-sm
                   p-2 border"
                 placeholder="0.00"
               />
@@ -80,7 +83,7 @@ export default function BudgetForm({ onSubmit, initialBudgets }) {
         className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md 
           hover:bg-indigo-700 focus:outline-none focus:ring-2 
           focus:ring-indigo-500 focus:ring-offset-2 transition-colors
-          font-medium disabled:opacity-50"
+          font-medium disabled:opacity-50 text-sm sm:text-base"
       >
         {isSubmitting ? "Saving..." : "Save Budgets"}
       </button>
