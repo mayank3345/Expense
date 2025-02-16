@@ -28,8 +28,8 @@ export default function ResetButton({ onReset }) {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="text-red-600 hover:text-red-800 text-sm sm:text-base 
-          font-medium transition-colors"
+        className="text-white text-sm sm:text-base 
+          font-medium transition-colors bg-red-600 px-3 py-2 rounded-xl hover:bg-slate-700 hover:text-white"
       >
         Reset
       </button>
